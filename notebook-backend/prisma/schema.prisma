@@ -14,3 +14,30 @@ model User {
   password String
   role     String  // "admin" o "user"
 }
+
+model Notebook {
+  id           Int      @id @default(autoincrement())
+  marca        String
+  modelo       String
+  numeroSerie  String   @unique
+  idHardware   String   @unique
+  estado       String   // Ej: "disponible", "prestada", "en servicio técnico"
+  observaciones String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  prestamos    Prestamo[] // Relación 1:N con los préstamos
+}
+
+model Prestamo {
+  id             Int      @id @default(autoincrement())
+  notebookId     Int
+  usuarioId      Int      // futuro: relación con User
+  fechaPrestamo  DateTime @default(now())
+  fechaDevolucion DateTime?
+
+  notebook       Notebook @relation(fields: [notebookId], references: [id])
+  // user        User?     @relation(fields: [usuarioId], references: [id]) // si querés enlazar con User
+
+  observaciones  String?
+}
